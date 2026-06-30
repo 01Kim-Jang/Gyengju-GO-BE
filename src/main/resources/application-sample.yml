@@ -21,7 +21,7 @@ openai:
   url: https://api.openai.com/v1
 
 odii:
-  api-key: 여기에_ODII_API_키
+  api-key: 여여기에_ODII_API_키
   url: https://apis.data.go.kr/B551011/Odii
 
 server:
