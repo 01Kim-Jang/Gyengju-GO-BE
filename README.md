@@ -4,7 +4,7 @@
 
 ## 기술 스택
 
-- **Java 21** / **Spring Boot 3.5**
+- **Java 17** / **Spring Boot 3.5**
 - **Spring Security 6** + **JWT** 인증
 - **Spring Data JPA** + **MySQL 8.0**
 - **한국관광공사 Odii API** - 경주 유적지 도슨트 데이터
