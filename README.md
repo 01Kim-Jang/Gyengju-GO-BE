@@ -4,7 +4,7 @@
 
 ## 기술 스택
 
-- **Java 17** / **Spring Boot 3.5**
+- **Java 17** / **Spring Boot 3.5.16**
 - **Spring Security 6** + **JWT** 인증
 - **Spring Data JPA** + **MySQL 8.0**
 - **한국관광공사 Odii API** - 경주 유적지 도슨트 데이터
@@ -28,7 +28,7 @@
 
 ### 사전 요구사항
 
-- Java 21
+- Java 17
 - MySQL 8.0
 - Maven
 
@@ -102,8 +102,3 @@ src/main/java/com/example/gyengju/
     ├── spot/                    # 경주 유적지
     └── proxy/                   # OpenAI / Odii 프록시
 ```
-
-## 주의사항
-
-`application.yml`은 `.gitignore`에 포함되어 있어 **절대 커밋되지 않습니다.**  
-API 키와 비밀번호는 로컬 `application.yml`에만 보관하세요.
