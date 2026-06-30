@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/gyengju_go?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 여기에_DB_비밀번호
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: 여기에_JWT_시크릿키_256비트_이상
+  expiration: 86400000
+
+openai:
+  api-key: 여기에_OPENAI_API_키
+  url: https://api.openai.com/v1
+
+odii:
+  api-key: 여기에_ODII_API_키
+  url: https://apis.data.go.kr/B551011/Odii
+
+server:
+  port: 8080
