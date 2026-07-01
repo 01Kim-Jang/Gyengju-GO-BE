@@ -20,6 +20,8 @@
 | 언어 설정 변경 | `PATCH /api/users/{id}/language` |
 | 경주 유적지 목록 | `GET /api/spots` |
 | 경주 유적지 상세 | `GET /api/spots/{id}` |
+| 방문 완료 (GPS 체크) | `POST /api/spots/{id}/visit` |
+| 방문 목록 조회 | `GET /api/users/{id}/visited` |
 | AI 챗봇 (프록시) | `POST /api/proxy/ai/chat` |
 | 다국어 번역 (프록시) | `POST /api/proxy/ai/translate` |
 | Odii API 프록시 | `GET /api/odii/**` |
@@ -72,9 +74,40 @@ odii:
 
 서버 시작 시 Odii API에서 경주 유적지 데이터를 자동으로 불러와 DB에 저장합니다. (최초 1회만 실행)
 
+## API 명세
+
+모든 `🔒` 표시 API는 Header에 JWT 토큰이 필요합니다.
+```
+Authorization: Bearer eyJ...토큰
+```
+
+### 인증
+| 메서드 | URL | 설명 |
+|--------|-----|------|
+| POST | `/api/users/signup` | 회원가입 |
+| POST | `/api/auth/login` | 로그인 (JWT 발급) |
+
+### 유적지
+| 메서드 | URL | 설명 |
+|--------|-----|------|
+| GET 🔒 | `/api/spots` | 유적지 전체 목록 |
+| GET 🔒 | `/api/spots/{id}` | 유적지 상세 |
+
+### 퀘스트
+| 메서드 | URL | 설명 |
+|--------|-----|------|
+| POST 🔒 | `/api/spots/{id}/visit?userId={userId}` | 방문 완료 (GPS 50m 이내) |
+| GET 🔒 | `/api/users/{id}/visited` | 방문 목록 조회 |
+
+### AI / 번역
+| 메서드 | URL | 설명 |
+|--------|-----|------|
+| POST | `/api/proxy/ai/chat` | AI 챗봇 |
+| POST | `/api/proxy/ai/translate` | 다국어 번역 |
+
 ## 지원 언어
 
-`language` 필드에 아래 코드를 사용합니다.
+`language` 필드 및 번역 `targetLangCode`에 아래 코드를 사용합니다.
 
 | 코드 | 언어 |
 |------|------|
@@ -94,11 +127,12 @@ src/main/java/com/example/gyengju/
 │   ├── SecurityConfig.java      # Spring Security 설정
 │   ├── JwtProvider.java         # JWT 생성/검증
 │   ├── JwtFilter.java           # JWT 인증 필터
-│   ├── RestTemplateConfig.java  # RestTemplate 빈
+│   ├── RestTemplateConfig.java  # RestTemplate / ObjectMapper 빈
 │   └── DataInitializer.java     # Odii API 초기 데이터 로드
 └── domain/
     ├── auth/                    # 로그인 인증
     ├── user/                    # 회원 관리
     ├── spot/                    # 경주 유적지
+    ├── quest/                   # 퀘스트 (방문 완료 / 방문 목록)
     └── proxy/                   # OpenAI / Odii 프록시
 ```
