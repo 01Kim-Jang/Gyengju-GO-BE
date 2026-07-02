@@ -7,6 +7,7 @@
 - **Java 17** / **Spring Boot 3.5.16**
 - **Spring Security 6** + **JWT** 인증
 - **Spring Data JPA** + **MySQL 8.0**
+- **Swagger UI** (springdoc-openapi 2.8.9) - API 명세 자동 문서화
 - **한국관광공사 Odii API** - 경주 유적지 도슨트 데이터
 - **OpenAI GPT-4o-mini** - AI 여행 가이드 챗봇 / 다국어 번역
 
@@ -16,12 +17,12 @@
 |------|-----------|
 | 회원가입 | `POST /api/users/signup` |
 | 로그인 (JWT 발급) | `POST /api/auth/login` |
-| 회원 조회 | `GET /api/users/{id}` |
-| 언어 설정 변경 | `PATCH /api/users/{id}/language` |
+| 내 정보 조회 | `GET /api/users/me` |
+| 언어 설정 변경 | `PATCH /api/users/me/language` |
 | 경주 유적지 목록 | `GET /api/spots` |
 | 경주 유적지 상세 | `GET /api/spots/{id}` |
-| 방문 완료 (GPS 체크) | `POST /api/spots/{id}/visit` |
-| 방문 목록 조회 | `GET /api/users/{id}/visited` |
+| 방문 완료 (GPS 50m 체크) | `POST /api/spots/{id}/visit` |
+| 방문 목록 조회 | `GET /api/users/visited` |
 | AI 챗봇 (프록시) | `POST /api/proxy/ai/chat` |
 | 다국어 번역 (프록시) | `POST /api/proxy/ai/translate` |
 | Odii API 프록시 | `GET /api/odii/**` |
@@ -76,9 +77,21 @@ odii:
 
 ## API 명세
 
-모든 `🔒` 표시 API는 Header에 JWT 토큰이 필요합니다.
+Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+
+모든 🔒 표시 API는 Header에 JWT 토큰이 필요합니다.
 ```
 Authorization: Bearer eyJ...토큰
+```
+
+### 공통 응답 형식
+
+```json
+{
+  "success": true,
+  "message": "성공",
+  "data": { }
+}
 ```
 
 ### 인증
@@ -86,6 +99,12 @@ Authorization: Bearer eyJ...토큰
 |--------|-----|------|
 | POST | `/api/users/signup` | 회원가입 |
 | POST | `/api/auth/login` | 로그인 (JWT 발급) |
+
+### 유저
+| 메서드 | URL | 설명 |
+|--------|-----|------|
+| GET 🔒 | `/api/users/me` | 내 정보 조회 |
+| PATCH 🔒 | `/api/users/me/language` | 언어 설정 변경 |
 
 ### 유적지
 | 메서드 | URL | 설명 |
@@ -96,8 +115,8 @@ Authorization: Bearer eyJ...토큰
 ### 퀘스트
 | 메서드 | URL | 설명 |
 |--------|-----|------|
-| POST 🔒 | `/api/spots/{id}/visit?userId={userId}` | 방문 완료 (GPS 50m 이내) |
-| GET 🔒 | `/api/users/{id}/visited` | 방문 목록 조회 |
+| POST 🔒 | `/api/spots/{spotId}/visit` | 방문 완료 (GPS 50m 이내) |
+| GET 🔒 | `/api/users/visited` | 방문 목록 조회 |
 
 ### AI / 번역
 | 메서드 | URL | 설명 |
@@ -125,10 +144,14 @@ Authorization: Bearer eyJ...토큰
 src/main/java/com/example/gyengju/
 ├── config/
 │   ├── SecurityConfig.java      # Spring Security 설정
+│   ├── SwaggerConfig.java       # Swagger UI 설정
 │   ├── JwtProvider.java         # JWT 생성/검증
 │   ├── JwtFilter.java           # JWT 인증 필터
 │   ├── RestTemplateConfig.java  # RestTemplate / ObjectMapper 빈
 │   └── DataInitializer.java     # Odii API 초기 데이터 로드
+├── global/
+│   ├── ApiResponse.java         # 공통 응답 형식
+│   └── GlobalExceptionHandler.java  # 전역 예외 처리
 └── domain/
     ├── auth/                    # 로그인 인증
     ├── user/                    # 회원 관리
