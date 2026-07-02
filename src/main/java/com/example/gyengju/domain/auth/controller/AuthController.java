@@ -3,6 +3,7 @@ package com.example.gyengju.domain.auth.controller;
 import com.example.gyengju.domain.auth.dto.LoginRequest;
 import com.example.gyengju.domain.auth.dto.LoginResponse;
 import com.example.gyengju.domain.auth.service.AuthService;
+import com.example.gyengju.global.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("로그인 성공", authService.login(request)));
     }
 }

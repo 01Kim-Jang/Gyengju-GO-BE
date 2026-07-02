@@ -3,6 +3,7 @@ package com.example.gyengju.domain.quest.controller;
 import com.example.gyengju.domain.quest.dto.VisitRequest;
 import com.example.gyengju.domain.quest.dto.VisitedSpotResponse;
 import com.example.gyengju.domain.quest.service.QuestService;
+import com.example.gyengju.global.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +20,16 @@ public class QuestController {
     private final QuestService questService;
 
     @PostMapping("/spots/{spotId}/visit")
-    public ResponseEntity<String> visitSpot(
+    public ResponseEntity<ApiResponse<Void>> visitSpot(
             @PathVariable Long spotId,
             @Valid @RequestBody VisitRequest request,
             Authentication authentication) {
-        String email = authentication.getName();
-        questService.visitSpot(email, spotId, request);
-        return ResponseEntity.ok("방문 완료!");
+        questService.visitSpot(authentication.getName(), spotId, request);
+        return ResponseEntity.ok(ApiResponse.success("방문 완료!", null));
     }
 
     @GetMapping("/users/visited")
-    public ResponseEntity<List<VisitedSpotResponse>> getVisitedSpots(Authentication authentication) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(questService.getVisitedSpots(email));
+    public ResponseEntity<ApiResponse<List<VisitedSpotResponse>>> getVisitedSpots(Authentication authentication) {
+        return ResponseEntity.ok(ApiResponse.success(questService.getVisitedSpots(authentication.getName())));
     }
 }
