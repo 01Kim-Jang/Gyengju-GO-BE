@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "유저", description = "회원가입 및 유저 관리 API")
@@ -27,17 +28,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("회원가입 성공", userId));
     }
 
-    @Operation(summary = "유저 조회", description = "유저 ID로 유저 정보를 조회합니다.")
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(userService.findById(id)));
+    @Operation(summary = "내 정보 조회", description = "로그인한 유저의 정보를 조회합니다.")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> getMe(Authentication authentication) {
+        return ResponseEntity.ok(ApiResponse.success(userService.findByEmail(authentication.getName())));
     }
 
-    @Operation(summary = "언어 설정", description = "유저의 선호 언어를 설정합니다. (예: ko, en, ja, zh)")
-    @PatchMapping("/{id}/language")
-    public ResponseEntity<ApiResponse<Void>> updateLanguage(@PathVariable Long id,
-                                                            @RequestParam String language) {
-        userService.updateLanguage(id, language);
+    @Operation(summary = "언어 설정", description = "로그인한 유저의 선호 언어를 설정합니다. (예: ko, en, ja, zh)")
+    @PatchMapping("/me/language")
+    public ResponseEntity<ApiResponse<Void>> updateLanguage(@RequestParam String language,
+                                                            Authentication authentication) {
+        userService.updateLanguage(authentication.getName(), language);
         return ResponseEntity.ok(ApiResponse.success("언어 설정 완료", null));
     }
 }

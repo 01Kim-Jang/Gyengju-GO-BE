@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class OpenAiProxyService {
 
     public String chat(ChatRequest request) {
         var systemMessage = Map.of("role", "system", "content", SYSTEM_PROMPT);
-        var allMessages = new java.util.ArrayList<Map<String, String>>();
+        var allMessages = new ArrayList<Map<String, String>>();
         allMessages.add(systemMessage);
         request.getMessages().forEach(m ->
                 allMessages.add(Map.of("role", m.getRole(), "content", m.getContent())));

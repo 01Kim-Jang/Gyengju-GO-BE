@@ -33,15 +33,15 @@ public class UserService {
         return userRepository.save(user).getId();
     }
 
-    public UserResponse findById(Long id) {
-        User user = userRepository.findById(id)
+    public UserResponse findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         return UserResponse.from(user);
     }
 
     @Transactional
-    public void updateLanguage(Long id, String language) {
-        User user = userRepository.findById(id)
+    public void updateLanguage(String email, String language) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         user.updateLanguage(language);
     }
