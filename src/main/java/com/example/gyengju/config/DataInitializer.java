@@ -54,14 +54,8 @@ public class DataInitializer implements ApplicationRunner {
             JsonNode root = objectMapper.readTree(response);
             JsonNode itemsNode = root.path("response").path("body").path("items").path("item");
 
-            // 첫 번째 아이템 필드 확인용 로그
-            if (itemsNode.isArray() && itemsNode.size() > 0) {
-                log.info("Odii API 첫 번째 아이템 구조: {}", itemsNode.get(0).toString());
-            }
-
             List<Spot> spots = new ArrayList<>();
 
-            // 결과가 배열인지 단일 객체인지 처리
             if (itemsNode.isArray()) {
                 for (JsonNode item : itemsNode) {
                     Spot spot = parseSpot(item);
