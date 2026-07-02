@@ -2,6 +2,7 @@ package com.example.gyengju.domain.spot.controller;
 
 import com.example.gyengju.domain.spot.dto.SpotResponse;
 import com.example.gyengju.domain.spot.service.SpotService;
+import com.example.gyengju.global.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,12 @@ public class SpotController {
     private final SpotService spotService;
 
     @GetMapping
-    public ResponseEntity<List<SpotResponse>> getAllSpots() {
-        return ResponseEntity.ok(spotService.findAll());
+    public ResponseEntity<ApiResponse<List<SpotResponse>>> getAllSpots() {
+        return ResponseEntity.ok(ApiResponse.success(spotService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SpotResponse> getSpot(@PathVariable Long id) {
-        return ResponseEntity.ok(spotService.findById(id));
+    public ResponseEntity<ApiResponse<SpotResponse>> getSpot(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(spotService.findById(id)));
     }
 }
