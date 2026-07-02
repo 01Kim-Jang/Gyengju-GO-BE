@@ -26,14 +26,14 @@ public class QuestService {
     private final SpotRepository spotRepository;
 
     @Transactional
-    public void visitSpot(Long userId, Long spotId, VisitRequest request) {
-        User user = userRepository.findById(userId)
+    public void visitSpot(String email, Long spotId, VisitRequest request) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new IllegalArgumentException("스팟을 찾을 수 없습니다."));
 
-        if (userSpotRepository.existsByUserIdAndSpotId(userId, spotId)) {
+        if (userSpotRepository.existsByUserIdAndSpotId(user.getId(), spotId)) {
             throw new IllegalStateException("이미 방문한 스팟입니다.");
         }
 
@@ -53,8 +53,10 @@ public class QuestService {
     }
 
     @Transactional(readOnly = true)
-    public List<VisitedSpotResponse> getVisitedSpots(Long userId) {
-        return userSpotRepository.findByUserId(userId).stream()
+    public List<VisitedSpotResponse> getVisitedSpots(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        return userSpotRepository.findByUserId(user.getId()).stream()
                 .map(VisitedSpotResponse::from)
                 .collect(Collectors.toList());
     }
